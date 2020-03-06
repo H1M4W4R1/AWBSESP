@@ -141,6 +141,8 @@ local function drawCircle(wx, wy, wz, text, name, size)
 		sy = qy;
 	end
 	
+	local tx, ty = client.WorldToScreen(Vector3(wx, wy, wz + TEXT_Y_TYPE:GetValue()));
+	local tnx, tny = client.WorldToScreen(Vector3(wx, wy, wz + TEXT_Y_PLAYERNAME:GetValue()));
 	if(tx ~= nil and ty ~= nil) then		
 		if(TYPE_TEXT:GetValue()) then
 			draw.Color(TEXT_COLOR_TYPE:GetValue());
