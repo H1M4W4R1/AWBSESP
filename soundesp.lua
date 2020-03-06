@@ -6,12 +6,19 @@ local TAB = gui.Tab(TabPosition, "himwari_sound_esp", "Better Sound ESP");
 local MULTIBOX = gui.Groupbox(TAB, "General Settings", 15, 15, 295, 400);
 local WEAPONBOX = gui.Groupbox(TAB, "Weapon Settings", 325, 15, 295, 400);
 local PLAYERBOX = gui.Groupbox(TAB, "Player Settings", 325, 475+15, 295, 400);
-local ITEMBOX = gui.Groupbox(TAB, "Item Settings", 15, 405, 295, 400);
-local OTHERBOX = gui.Groupbox(TAB, "Other Settings", 15, 715, 295, 400);
+local ITEMBOX = gui.Groupbox(TAB, "Item Settings", 15, 620, 295, 400);
+local OTHERBOX = gui.Groupbox(TAB, "Other Settings", 15, 930, 295, 400);
 local GRENADEBOX = gui.Groupbox(TAB, "Grenade Settings", 325, 800, 295, 400);
 
+gui.Text(MULTIBOX, "Box Settings");
 local BOX_SIZE = gui.Slider(MULTIBOX, "bsesp_box_size", "Box Size", 5, 0, 100);
+gui.Text(MULTIBOX, "Circle Settings");
+local CIRCLE_SIZE = gui.Slider(MULTIBOX, "bsesp_circle_size", "Circle Size", 5, 0, 100);
+local START_CIRCLE_SIZE = gui.Slider(MULTIBOX, "bsesp_circle_ssize", "Circle Start Size", 1, 0, 100);
+
 local MAX_DISTANCE = gui.Slider(MULTIBOX, "bsesp_hearability_distance", "Max Distance", 1000, 0, 10000);
+
+local METHOD = gui.Combobox(MULTIBOX, "bsesp_circles", "Method", "Box", "Circles", "Scaling Circles");
 
 local TEAM_ENABLED = gui.Checkbox( MULTIBOX, "bsesp_team_enabled", "Team Sounds", 0 );
 local SELF_ENABLED = gui.Checkbox( MULTIBOX, "bsesp_self_enabled", "My Sounds", 0 );
@@ -111,6 +118,43 @@ local decoy_firing_color = gui.ColorPicker(decoy_firing_enabled, "besp_decoy_fir
 
 
 -- Utility
+local function drawCircle(wx, wy, wz, text, name, size)
+	-- Draw the circle
+	local sx, sy, sz;
+	sx = wx + math.sin(0) * size;
+	sy = wy + math.cos(0) * size;
+	for i = 0, 360, 45 do
+		local q = i * math.pi / 180;
+		local qx = wx + math.sin(q) * size;
+		local qy = wy + math.cos(q) * size;
+		local vs = Vector3(sx, sy, wz);
+		local ve = Vector3(qx, qy, wz);
+		
+		local x1, y1 = client.WorldToScreen(vs);
+		local x2, y2 = client.WorldToScreen(ve);
+		
+		if(x1 ~= nil and x2 ~= nil and y1 ~= nil and y2 ~= nil) then
+			draw.Line(x1, y1, x2, y2);
+			print(x1 .. " " .. y1 .. " " .. x2 .. " " .. y2);
+		end
+		sx = qx;
+		sy = qy;
+	end
+	
+	if(tx ~= nil and ty ~= nil) then		
+		if(TYPE_TEXT:GetValue()) then
+			draw.Color(TEXT_COLOR_TYPE:GetValue());
+			draw.Text(tx, ty, text);
+		end
+	end
+	if(tnx ~= nil and tny ~= nil) then
+		if(PLAYERNAME_TEXT:GetValue()) then
+			draw.Color(TEXT_COLOR_NAME:GetValue());
+			draw.Text(tnx, tny, name);
+		end
+	end
+end
+
 local function newSound(sid, wx, wy, wz, duration, text, playerName)
 	sound = {
 		id = sid;
@@ -200,6 +244,7 @@ local function getDistance(my_x, my_y, my_z, t_x, t_y, t_z)
     local dz = my_z - t_z;
     return math.sqrt(dx*dx + dy*dy + dz*dz);
 end
+
 
 -- Just events
 local function decoy_firing(Event)
@@ -322,6 +367,7 @@ end
 local function player_jump(Event)
 	if player_jump_enabled:GetValue() then
 		local entity = entities.GetByUserID(Event:GetInt('userid'));
+		
 		if entity:GetIndex() == client:GetLocalPlayerIndex() and not SELF_ENABLED:GetValue() then
 			return;
 		end		
@@ -615,10 +661,19 @@ local function onDraw()
 			local maxDistance = MAX_DISTANCE:GetValue();
 			local me = entities:GetLocalPlayer();
 			if me ~= nil then
-				local myPos = me:GetAbsOrigin();
-				
+				local myPos = me:GetAbsOrigin();				
 				if(getDistance(myPos.x, myPos.y, myPos.z, data.x, data.y, data.z) <= maxDistance) then
-					drawBox(data.x, data.y, data.z + zOffset, data.title, data.name);
+					if(METHOD:GetValue() == 0) then
+						drawBox(data.x, data.y, data.z + zOffset, data.title, data.name);
+					elseif(METHOD:GetValue() == 1) then
+						drawCircle(data.x, data.y, data.z, data.title, data.name, CIRCLE_SIZE:GetValue());
+					elseif(METHOD:GetValue() == 2) then
+						local minSize = START_CIRCLE_SIZE:GetValue();
+						local maxSize = CIRCLE_SIZE:GetValue();
+						local totalTime = globals.RealTime() - data.st;
+						local value = minSize + (maxSize - minSize) * (totalTime/data.d);
+						drawCircle(data.x, data.y, data.z, data.title, data.name, value);
+					end
 				end
 			end
 		end
