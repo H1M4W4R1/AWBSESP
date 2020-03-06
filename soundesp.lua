@@ -4,6 +4,12 @@ local timedTable = {};
 local TabPosition = gui.Reference("VISUALS");
 local TAB = gui.Tab(TabPosition, "himwari_sound_esp", "Better Sound ESP");
 local MULTIBOX = gui.Groupbox(TAB, "General Settings", 15, 15, 295, 400);
+local WEAPONBOX = gui.Groupbox(TAB, "Weapon Settings", 325, 15, 295, 400);
+local PLAYERBOX = gui.Groupbox(TAB, "Player Settings", 325, 475+15, 295, 400);
+local ITEMBOX = gui.Groupbox(TAB, "Item Settings", 15, 405, 295, 400);
+local OTHERBOX = gui.Groupbox(TAB, "Other Settings", 15, 715, 295, 400);
+local GRENADEBOX = gui.Groupbox(TAB, "Grenade Settings", 325, 800, 295, 400);
+
 local BOX_SIZE = gui.Slider(MULTIBOX, "bsesp_box_size", "Box Size", 5, 0, 100);
 local MAX_DISTANCE = gui.Slider(MULTIBOX, "bsesp_hearability_distance", "Max Distance", 1000, 0, 10000);
 
@@ -17,57 +23,91 @@ local TEXT_Y_PLAYERNAME = gui.Slider(MULTIBOX, "bsesp_text_playername_y", "Name 
 local TEXT_COLOR_TYPE =  gui.ColorPicker(TYPE_TEXT, "besp_type_text_color", "Type Text Color", 255, 255, 255, 255);
 local TEXT_COLOR_NAME =  gui.ColorPicker(PLAYERNAME_TEXT, "besp_name_text_color", "Name Text Color", 255, 255, 255, 255);
 
-local weapon_fire_enabled = gui.Checkbox( MULTIBOX, "bsesp_weapon_fire_enabled", "Weapon Fire Enabled", 1 );
-local weapon_fire_time = gui.Slider(MULTIBOX, "bsesp_time_weapon_fire", "Weapon Fire Duration (s)", 3, 0, 100);
+-- Weapon setings
+local weapon_fire_enabled = gui.Checkbox( WEAPONBOX, "bsesp_weapon_fire_enabled", "Weapon Fire Enabled", 1 );
+local weapon_fire_time = gui.Slider(WEAPONBOX, "bsesp_time_weapon_fire", "Weapon Fire Duration (s)", 3, 0, 100);
 local weapon_fire_color = gui.ColorPicker(weapon_fire_enabled, "besp_weapon_fire_color", "Weapon Fire Color", 255, 0, 0, 255);
  
-local weapon_fire_on_empty_enabled = gui.Checkbox( MULTIBOX, "bsesp_weapon_fire_on_empty_enabled", "Weapon Fire (Empty) Enabled", 1 );
-local weapon_fire_on_empty_time = gui.Slider(MULTIBOX, "bsesp_time_weapon_fire_on_empty", "Weapon Fire (Empty) Duration (s)", 3, 0, 100);
+local weapon_fire_on_empty_enabled = gui.Checkbox( WEAPONBOX, "bsesp_weapon_fire_on_empty_enabled", "Weapon Fire (Empty) Enabled", 1 );
+local weapon_fire_on_empty_time = gui.Slider(WEAPONBOX, "bsesp_time_weapon_fire_on_empty", "Weapon Fire (Empty) Duration (s)", 3, 0, 100);
 local weapon_fire_on_empty_color = gui.ColorPicker(weapon_fire_on_empty_enabled, "besp_weapon_fire_on_empty_color", "Weapon Fire (Empty) Color", 255, 0, 0, 255);
 
-local player_hurt_enabled = gui.Checkbox( MULTIBOX, "bsesp_player_hurt_enabled", "Player Hurt Enabled", 1 );
-local player_hurt_time = gui.Slider(MULTIBOX, "bsesp_time_player_hurt", "Player Hurt Duration (s)", 3, 0, 100);
-local player_hurt_color = gui.ColorPicker(player_hurt_enabled, "besp_player_hurt_color", "Player Hurt Color", 255, 0, 0, 255);
-
-local grenade_thrown_enabled = gui.Checkbox( MULTIBOX, "bsesp_grenade_thrown_enabled", "Grenade Thrown Enabled", 1 );
-local grenade_thrown_time = gui.Slider(MULTIBOX, "bsesp_time_grenade_thrown", "Grenade Thrown Duration (s)", 3, 0, 100);
-local grenade_thrown_color = gui.ColorPicker(grenade_thrown_enabled, "besp_grenade_thrown_color", "Grenade Thrown Color", 255, 0, 0, 255);
-
-local weapon_reload_enabled = gui.Checkbox( MULTIBOX, "bsesp_weapon_reload_enabled", "Weapon Reload Enabled", 1 );
-local weapon_reload_time = gui.Slider(MULTIBOX, "bsesp_time_weapon_reload", "Weapon Reload Duration (s)", 3, 0, 100);
+local weapon_reload_enabled = gui.Checkbox( WEAPONBOX, "bsesp_weapon_reload_enabled", "Weapon Reload Enabled", 1 );
+local weapon_reload_time = gui.Slider(WEAPONBOX, "bsesp_time_weapon_reload", "Weapon Reload Duration (s)", 3, 0, 100);
 local weapon_reload_color = gui.ColorPicker(weapon_reload_enabled, "besp_weapon_reload_color", "Weapon Reload Color", 255, 0, 0, 255);
 
-local weapon_zoom_enabled = gui.Checkbox( MULTIBOX, "bsesp_weapon_zoom_enabled", "Weapon Zoom Enabled", 1 );
-local weapon_zoom_time = gui.Slider(MULTIBOX, "bsesp_time_weapon_zoom", "Weapon Zoom Duration (s)", 3, 0, 100);
+local weapon_zoom_enabled = gui.Checkbox( WEAPONBOX, "bsesp_weapon_zoom_enabled", "Weapon Zoom Enabled", 1 );
+local weapon_zoom_time = gui.Slider(WEAPONBOX, "bsesp_time_weapon_zoom", "Weapon Zoom Duration (s)", 3, 0, 100);
 local weapon_zoom_color = gui.ColorPicker(weapon_zoom_enabled, "besp_weapon_zoom_color", "Weapon Zoom Color", 255, 0, 0, 255);
 
-local item_pickup_enabled = gui.Checkbox( MULTIBOX, "bsesp_item_pickup_enabled", "Item Pickup Enabled", 1 );
-local item_pickup_time = gui.Slider(MULTIBOX, "bsesp_time_item_pickup", "Item Pickup Duration (s)", 3, 0, 100);
-local item_pickup_color = gui.ColorPicker(item_pickup_enabled, "besp_item_pickup_color", "Item Pickup Color", 255, 0, 0, 255);
+local grenade_thrown_enabled = gui.Checkbox( WEAPONBOX, "bsesp_grenade_thrown_enabled", "Grenade Thrown Enabled", 1 );
+local grenade_thrown_time = gui.Slider(WEAPONBOX, "bsesp_time_grenade_thrown", "Grenade Thrown Duration (s)", 3, 0, 100);
+local grenade_thrown_color = gui.ColorPicker(grenade_thrown_enabled, "besp_grenade_thrown_color", "Grenade Thrown Color", 255, 0, 0, 255);
 
-local item_remove_enabled = gui.Checkbox( MULTIBOX, "bsesp_item_remove_enabled", "Item Remove Enabled", 1 );
-local item_remove_time = gui.Slider(MULTIBOX, "bsesp_time_item_remove", "Item Remove Duration (s)", 3, 0, 100);
-local item_remove_color = gui.ColorPicker(item_remove_enabled, "besp_item_remove_color", "Item Remove Color", 255, 0, 0, 255);
 
-local player_jump_enabled = gui.Checkbox( MULTIBOX, "bsespplayer_jump_enabled", "Player Jump Enabled", 1 );
-local player_jump_time = gui.Slider(MULTIBOX, "bsesp_time_player_jump", "Player Jump Duration (s)", 3, 0, 100);
+-- Player settings
+local player_hurt_enabled = gui.Checkbox( PLAYERBOX, "bsesp_player_hurt_enabled", "Player Hurt Enabled", 1 );
+local player_hurt_time = gui.Slider(PLAYERBOX, "bsesp_time_player_hurt", "Player Hurt Duration (s)", 3, 0, 100);
+local player_hurt_color = gui.ColorPicker(player_hurt_enabled, "besp_player_hurt_color", "Player Hurt Color", 255, 0, 0, 255);
+
+local player_jump_enabled = gui.Checkbox( PLAYERBOX, "bsespplayer_jump_enabled", "Player Jump Enabled", 1 );
+local player_jump_time = gui.Slider(PLAYERBOX, "bsesp_time_player_jump", "Player Jump Duration (s)", 3, 0, 100);
 local player_jump_color = gui.ColorPicker(player_jump_enabled, "besp_player_jump_color", "Player Jump Color", 255, 0, 0, 255);
 
-local player_footstep_enabled = gui.Checkbox( MULTIBOX, "bsesp_player_footstep_enabled", "Footsteps Enabled", 1 );
-local player_footstep_time = gui.Slider(MULTIBOX, "bsesp_player_footstep_remove", "Footstepse Duration (s)", 3, 0, 100);
+local player_footstep_enabled = gui.Checkbox( PLAYERBOX, "bsesp_player_footstep_enabled", "Footsteps Enabled", 1 );
+local player_footstep_time = gui.Slider(PLAYERBOX, "bsesp_player_footstep_remove", "Footstepse Duration (s)", 3, 0, 100);
 local player_footstep_color = gui.ColorPicker(player_footstep_enabled, "besp_player_footstep_color", "Footsteps Color", 255, 0, 0, 255);
 
-local bomb_beginplant_enabled = gui.Checkbox( MULTIBOX, "bsesp_bomb_beginplant_enabled", "Bomb Plant Enabled", 1 );
-local bomb_beginplant_time = gui.Slider(MULTIBOX, "bsesp_bomb_beginplant_remove", "Bomb Plant Duration (s)", 3, 0, 100);
+-- Item settings
+
+
+local item_pickup_enabled = gui.Checkbox( ITEMBOX, "bsesp_item_pickup_enabled", "Item Pickup Enabled", 1 );
+local item_pickup_time = gui.Slider(ITEMBOX, "bsesp_time_item_pickup", "Item Pickup Duration (s)", 3, 0, 100);
+local item_pickup_color = gui.ColorPicker(item_pickup_enabled, "besp_item_pickup_color", "Item Pickup Color", 255, 0, 0, 255);
+
+local item_remove_enabled = gui.Checkbox( ITEMBOX, "bsesp_item_remove_enabled", "Item Remove Enabled", 1 );
+local item_remove_time = gui.Slider(ITEMBOX, "bsesp_time_item_remove", "Item Remove Duration (s)", 3, 0, 100);
+local item_remove_color = gui.ColorPicker(item_remove_enabled, "besp_item_remove_color", "Item Remove Color", 255, 0, 0, 255);
+
+local item_equip_enabled = gui.Checkbox( ITEMBOX, "bsesp_item_equip_enabled", "Item Equip Enabled", 1 );
+local item_equip_time = gui.Slider(ITEMBOX, "bsesp_item_equip_remove", "Item Equip Duration (s)", 3, 0, 100);
+local item_equip_color = gui.ColorPicker(item_equip_enabled, "besp_item_equip_color", "Item Equip Color", 255, 0, 0, 255);
+
+-- Bomb settings
+
+local bomb_beginplant_enabled = gui.Checkbox( OTHERBOX, "bsesp_bomb_beginplant_enabled", "Bomb Plant Enabled", 1 );
+local bomb_beginplant_time = gui.Slider(OTHERBOX, "bsesp_bomb_beginplant_remove", "Bomb Plant Duration (s)", 3, 0, 100);
 local bomb_beginplant_color = gui.ColorPicker(bomb_beginplant_enabled, "besp_bomb_beginplant_color", "Bomb Plant Color", 255, 0, 0, 255);
 
-local bomb_begindefuse_enabled = gui.Checkbox( MULTIBOX, "bsesp_bomb_begindefuse_enabled", "Bomb Defuse Enabled", 1 );
-local bomb_begindefuse_time = gui.Slider(MULTIBOX, "bsesp_bomb_begindefuse_remove", "Bomb Defuse Duration (s)", 3, 0, 100);
+local bomb_begindefuse_enabled = gui.Checkbox( OTHERBOX, "bsesp_bomb_begindefuse_enabled", "Bomb Defuse Enabled", 1 );
+local bomb_begindefuse_time = gui.Slider(OTHERBOX, "bsesp_bomb_begindefuse_remove", "Bomb Defuse Duration (s)", 3, 0, 100);
 local bomb_begindefuse_color = gui.ColorPicker(bomb_begindefuse_enabled, "besp_bomb_begindefuse_color", "Bomb Defuse Color", 255, 0, 0, 255);
 
-local item_equip_enabled = gui.Checkbox( MULTIBOX, "bsesp_item_equip_enabled", "Item Equip Enabled", 1 );
-local item_equip_time = gui.Slider(MULTIBOX, "bsesp_item_equip_remove", "Item Equip Duration (s)", 3, 0, 100);
-local item_equip_color = gui.ColorPicker(item_equip_enabled, "besp_item_equip_color", "Item Equip Color", 255, 0, 0, 255);
+-- Grenade settings
+
+local hegrenade_detonate_enabled = gui.Checkbox( GRENADEBOX, "bsesp_hegrenade_detonate_enabled", "HE Grenade Explosion Enabled", 1 );
+local hegrenade_detonate_time = gui.Slider(GRENADEBOX, "bsesp_hegrenade_detonate_time", "HE Grenade Explosion Duration (s)", 3, 0, 100);
+local hegrenade_detonate_color = gui.ColorPicker(hegrenade_detonate_enabled, "besp_hegrenade_detonate_color", "HE Grenade Explosion Color", 255, 0, 0, 255);
+
+local flashbang_detonate_enabled = gui.Checkbox( GRENADEBOX, "bsesp_flashbang_detonate_enabled", "FLASH Grenade Explosion Enabled", 1 );
+local flashbang_detonate_time = gui.Slider(GRENADEBOX, "bsesp_flashbang_detonate_time", "FLASH Grenade Explosion Duration (s)", 3, 0, 100);
+local flashbang_detonate_color = gui.ColorPicker(flashbang_detonate_enabled, "besp_flashbang_detonate_color", "FLASH Grenade Explosion Color", 255, 0, 0, 255);
+
+local smokegrenade_detonate_enabled = gui.Checkbox( GRENADEBOX, "bsesp_smokegrenade_detonate_enabled", "SMOKE Grenade Explosion Enabled", 1 );
+local smokegrenade_detonate_time = gui.Slider(GRENADEBOX, "bsesp_smokegrenade_detonate_time", "SMOKE Grenade Explosion Duration (s)", 3, 0, 100);
+local smokegrenade_detonate_color = gui.ColorPicker(smokegrenade_detonate_enabled, "besp_smokegrenade_detonate_color", "SMOKE Grenade Explosion Color", 255, 0, 0, 255);
+
+local decoy_detonate_enabled = gui.Checkbox( GRENADEBOX, "bsesp_decoy_detonate_enabled", "DECOY Grenade Explosion Enabled", 1 );
+local decoy_detonate_time = gui.Slider(GRENADEBOX, "bsesp_decoy_detonate_time", "DECOY Grenade Explosion Duration (s)", 3, 0, 100);
+local decoy_detonate_color = gui.ColorPicker(decoy_detonate_enabled, "besp_decoy_detonate_color", "DECOY Grenade Explosion Color", 255, 0, 0, 255);
+
+local molotov_detonate_enabled = gui.Checkbox( GRENADEBOX, "bsesp_molotov_detonate_enabled", "MOLOTOV Grenade Explosion Enabled", 1 );
+local molotov_detonate_time = gui.Slider(GRENADEBOX, "bsesp_molotov_detonate_time", "MOLOTOV Grenade Explosion Duration (s)", 3, 0, 100);
+local molotov_detonate_color = gui.ColorPicker(molotov_detonate_enabled, "besp_molotov_detonate_color", "MOLOTOV Grenade Explosion Color", 255, 0, 0, 255);
+
+local decoy_firing_enabled = gui.Checkbox( GRENADEBOX, "bsesp_decoy_firing_enabled", "DECOY Firing Enabled", 1 );
+local decoy_firing_time = gui.Slider(GRENADEBOX, "bsesp_decoy_firing_time", "DECOY Firing Duration (s)", 3, 0, 100);
+local decoy_firing_color = gui.ColorPicker(decoy_firing_enabled, "besp_decoy_firing_color", "DECOY Firing Color", 255, 0, 0, 255);
 
 
 -- Utility
@@ -162,6 +202,64 @@ local function getDistance(my_x, my_y, my_z, t_x, t_y, t_z)
 end
 
 -- Just events
+local function decoy_firing(Event)
+	if decoy_firing_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		
+		newSound("decoy_firing",x, y, z, decoy_firing_time:GetValue(), "Decoy Firing", "DECOY");
+	end
+end
+
+local function hegrenade_detonate(Event)
+	if hegrenade_detonate_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		
+		newSound("hegrenade_detonate",x, y, z, hegrenade_detonate_time:GetValue(), "HE Explosion", "HE");
+	end
+end
+
+local function flashbang_detonate(Event)
+	if flashbang_detonate_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		newSound("flashbang_detonate",x, y, z, flashbang_detonate_time:GetValue(), "FLASH Explosion", "FLASH");
+	end
+end
+
+
+local function smokegrenade_detonate(Event)
+	if smokegrenade_detonate_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		newSound("smokegrenade_detonate",x, y, z, smokegrenade_detonate_time:GetValue(), "SMOKE Explosion", "SMOKE");
+	end
+end
+
+local function decoy_detonate(Event)
+	if decoy_detonate_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		newSound("decoy_detonate",x, y, z, decoy_detonate_time:GetValue(), "DECOY Explosion", "DECOY");
+	end
+end
+
+
+local function molotov_detonate(Event)
+	if molotov_detonate_enabled:GetValue() then
+		local x = Event:GetInt('x');
+		local y = Event:GetInt('y');
+		local z = Event:GetInt('z');
+		newSound("molotov_detonate",x, y, z, molotov_detonate_time:GetValue(), "MOLOTOV Explosion", "MOLOTOV");
+	end
+end
+
 
 local function item_equip(Event)
 	if item_equip_enabled:GetValue() then
@@ -443,6 +541,19 @@ local function onGameEvent(Event)
 		item_equip(Event);
 	elseif name == "round_end" then
 		round_end(Event);
+	elseif name == "hegrenade_detonate" then
+		hegrenade_detonate(Event);
+	elseif name == "flashbang_detonate" then
+		flashbang_detonate(Event);
+	elseif name == "molotov_detonate" then
+		molotov_detonate(Event);
+	elseif name == "decoy_detonate" then
+		decoy_detonate(Event);
+	elseif name == "decoy_firing" then
+		decoy_firing(Event);
+	elseif name == "smokegrenade_detonate" then
+
+		smokegrenade_detonate(Event);
 	end
 
 end
@@ -473,8 +584,26 @@ local function onDraw()
 			elseif data.id == "player_jump" then
 				draw.Color(player_jump_color:GetValue());
 				zOffset = 0;
+			elseif data.id == "hegrenade_detonate" then
+				draw.Color(hegrenade_detonate_color:GetValue());
+				zOffset = 0;
+			elseif data.id == "flashbang_detonate" then
+				draw.Color(flashbang_detonate_color:GetValue());
+				zOffset = 0;
+			elseif data.id == "smokegrenade_detonate" then
+				draw.Color(smokegrenade_detonate_color:GetValue());
+				zOffset = 0;
+			elseif data.id == "decoy_detonate" then
+				draw.Color(decoy_detonate_color:GetValue());
+				zOffset = 0;
+			elseif data.id == "molotov_detonate" then
+				draw.Color(molotov_detonate_color:GetValue());
+				zOffset = 0;
 			elseif data.id == "player_footstep" then
 				draw.Color(player_footstep_color:GetValue());
+				zOffset = 0;
+			elseif data.id == "decoy_firing" then
+				draw.Color(decoy_firing_color:GetValue());
 				zOffset = 0;
 			elseif data.id == "bomb_beginplant" then
 				draw.Color(bomb_beginplant_color:GetValue());
@@ -492,12 +621,6 @@ local function onDraw()
 			end
 		end
 	end
-
-end
-
-local function onPlayerMove(cmd)
-
-
 
 end
 
@@ -522,10 +645,17 @@ client.AllowListener("bomb_begindefuse");
 client.AllowListener("bomb_abortdefuse");
 client.AllowListener("bomb_defused");
 
+-- Grenades section
+client.AllowListener("hegrenade_detonate");
+client.AllowListener("flashbang_detonate");
+client.AllowListener("smokegrenade_detonate");
+client.AllowListener("molotov_detonate");
+client.AllowListener("decoy_detonate");
+client.AllowListener("decoy_firing");
+
 -- Utility
 client.AllowListener("round_end");
 
 -- Callbacks section
 callbacks.Register("Draw", "himawari_sound_esp_draw", onDraw);
 callbacks.Register( 'FireGameEvent', 'himawari_sound_esp_gameevent', onGameEvent );
-callbacks.Register("CreateMove", "himawari_sound_esp_playermove", onPlayerMove);
