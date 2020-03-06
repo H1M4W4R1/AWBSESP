@@ -135,7 +135,6 @@ local function drawCircle(wx, wy, wz, text, name, size)
 		
 		if(x1 ~= nil and x2 ~= nil and y1 ~= nil and y2 ~= nil) then
 			draw.Line(x1, y1, x2, y2);
-			print(x1 .. " " .. y1 .. " " .. x2 .. " " .. y2);
 		end
 		sx = qx;
 		sy = qy;
