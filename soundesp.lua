@@ -614,10 +614,12 @@ local function onDraw()
 			end
 			local maxDistance = MAX_DISTANCE:GetValue();
 			local me = entities:GetLocalPlayer();
-			local myPos = me:GetAbsOrigin();
-			
-			if(getDistance(myPos.x, myPos.y, myPos.z, data.x, data.y, data.z) <= maxDistance) then
-				drawBox(data.x, data.y, data.z + zOffset, data.title, data.name);
+			if me ~= nil then
+				local myPos = me:GetAbsOrigin();
+				
+				if(getDistance(myPos.x, myPos.y, myPos.z, data.x, data.y, data.z) <= maxDistance) then
+					drawBox(data.x, data.y, data.z + zOffset, data.title, data.name);
+				end
 			end
 		end
 	end
